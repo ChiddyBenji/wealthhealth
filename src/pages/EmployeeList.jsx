@@ -1,17 +1,17 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, Suspense } from "react";
 import { useSelector } from "react-redux";
-import DataTable from "../components/Table/DataTable";
 import { Link } from "react-router-dom";
+import "../App.scss";
+
+// Lazy import
+const DataTable = React.lazy(() => import("../components/Table/DataTable"));
 
 function EmployeeList() {
   const employees = useSelector((state) => state.employees.list);
-
-  // États pour recherche, pagination, et nombre de lignes
   const [search, setSearch] = useState("");
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Colonnes de la table
   const columns = useMemo(
     () => [
       { header: "First Name", accessorKey: "firstName" },
@@ -27,7 +27,6 @@ function EmployeeList() {
     []
   );
 
-  // Filtrage par recherche (name, department, etc.)
   const filteredEmployees = useMemo(() => {
     if (!search) return employees;
     return employees.filter((emp) =>
@@ -37,7 +36,6 @@ function EmployeeList() {
     );
   }, [search, employees]);
 
-  // Pagination
   const totalPages = Math.ceil(filteredEmployees.length / entriesPerPage);
   const paginatedEmployees = useMemo(() => {
     const start = (currentPage - 1) * entriesPerPage;
@@ -46,69 +44,49 @@ function EmployeeList() {
   }, [filteredEmployees, currentPage, entriesPerPage]);
 
   return (
-    <div>
+    <div className="employee-list">
       <h1>Current Employees</h1>
 
-      {/* Controls */}
-      <div
-        className="table-controls"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "1rem",
-        }}
-      >
-        {/* Show Entries */}
-        <div>
-          <label>
-            Show{" "}
-            <select
-              value={entriesPerPage}
-              onChange={(e) => {
-                setEntriesPerPage(Number(e.target.value));
-                setCurrentPage(1); // reset to first page
-              }}
-            >
-              {[10, 25, 50, 100].map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>{" "}
-            entries
-          </label>
-        </div>
+      <div className="table-controls">
+        <label>
+          Show{" "}
+          <select
+            value={entriesPerPage}
+            onChange={(e) => {
+              setEntriesPerPage(Number(e.target.value));
+              setCurrentPage(1);
+            }}
+          >
+            {[10, 25, 50, 100].map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>{" "}
+          entries
+        </label>
 
-        {/* Search */}
-        <div>
-          <label>
-            Search:{" "}
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1); // reset page on search
-              }}
-              placeholder="Search employees..."
-            />
-          </label>
-        </div>
+        <label>
+          Search:{" "}
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+            placeholder="Search employees..."
+          />
+        </label>
       </div>
 
-      {/* Data Table */}
-      <DataTable columns={columns} data={paginatedEmployees} />
+      <Suspense fallback={<div>Loading table...</div>}>
+        <div className="table-wrapper">
+          <DataTable columns={columns} data={paginatedEmployees} />
+        </div>
+      </Suspense>
 
-      {/* Showing entries + Pagination */}
-      <div
-        style={{
-          marginTop: "1rem",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="pagination-info">
         <div>
           {filteredEmployees.length > 0 ? (
             <p>
@@ -118,7 +96,10 @@ function EmployeeList() {
                 filteredEmployees.length
               )}{" "}
               to{" "}
-              {Math.min(currentPage * entriesPerPage, filteredEmployees.length)}{" "}
+              {Math.min(
+                currentPage * entriesPerPage,
+                filteredEmployees.length
+              )}{" "}
               of {filteredEmployees.length} entries
             </p>
           ) : (
@@ -145,7 +126,7 @@ function EmployeeList() {
         </div>
       </div>
 
-      <Link to="/" style={{ display: "block", marginTop: "2rem" }}>
+      <Link to="/" className="back-home">
         Home
       </Link>
     </div>
