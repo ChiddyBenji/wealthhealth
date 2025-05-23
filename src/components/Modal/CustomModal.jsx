@@ -6,6 +6,7 @@ export default function CustomModal({ isOpen, onClose }) {
       isOpen={isOpen} 
       onRequestClose={onClose} 
       contentLabel="Employee Created"
+       className="custom-modal"
     >
       <h2>Employee Created!</h2>
       <button onClick={onClose}>Close</button>

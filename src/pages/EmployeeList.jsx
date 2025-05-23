@@ -12,13 +12,30 @@ function EmployeeList() {
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const formatDate = (isoDate) => {
+    if (!isoDate) return "";
+    return new Intl.DateTimeFormat("fr-FR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date(isoDate));
+  };
+
   const columns = useMemo(
     () => [
       { header: "First Name", accessorKey: "firstName" },
       { header: "Last Name", accessorKey: "lastName" },
-      { header: "Start Date", accessorKey: "startDate" },
+      {
+        header: "Start Date",
+        accessorKey: "startDate",
+        cell: (cell) => formatDate(cell.getValue()),
+      },
       { header: "Department", accessorKey: "department" },
-      { header: "Date of Birth", accessorKey: "birthDate" },
+      {
+        header: "Date of Birth",
+        accessorKey: "birthDate",
+        cell: (cell) => formatDate(cell.getValue()),
+      },
       { header: "Street", accessorKey: "street" },
       { header: "City", accessorKey: "city" },
       { header: "State", accessorKey: "state" },
@@ -96,10 +113,7 @@ function EmployeeList() {
                 filteredEmployees.length
               )}{" "}
               to{" "}
-              {Math.min(
-                currentPage * entriesPerPage,
-                filteredEmployees.length
-              )}{" "}
+              {Math.min(currentPage * entriesPerPage, filteredEmployees.length)}{" "}
               of {filteredEmployees.length} entries
             </p>
           ) : (

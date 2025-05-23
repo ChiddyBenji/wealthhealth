@@ -32,7 +32,9 @@ body {
     display: block;
     text-align: center;
     margin-bottom: 2rem;
-    color: #007bff;
+    color: #0056b3;
+    font-size: 1.125rem;
+    font-weight: 600;
     text-decoration: none;
     font-weight: 500;
 
@@ -82,7 +84,7 @@ body {
       margin-top: 1.5rem;
       padding: 0.75rem 1rem;
       font-size: 1rem;
-      background-color: #007bff;
+      background-color: #0056b3;
       color: white;
       border: none;
       border-radius: 8px;
@@ -172,7 +174,7 @@ body {
 
     button {
       padding: 0.5rem 1rem;
-      background-color: #007bff;
+      background-color: #0056b3;
       border: none;
       border-radius: 6px;
       color: white;
@@ -254,4 +256,19 @@ tbody {
 
 .placeholder {
   color: #444 !important;
+}
+
+// modal
+
+.custom-modal {
+  background: white;
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 400px;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
